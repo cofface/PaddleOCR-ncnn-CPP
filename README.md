@@ -55,3 +55,25 @@ https://github.com/nihui/ncnn-android-ppocrv5
 https://github.com/FeiGeChuanShu/ncnn_paddleocr
 
 https://github.com/PaddlePaddle/PaddleOCR
+
+
+
+///////////////////////////////////////////////////模型转换参考
+guidelines for converting PPOCRv5 models(https://github.com/nihui/ncnn-android-ppocrv5#guidelines-for-converting-ppocrv5-models)
+
+1.install paddleocr:
+pip install paddlepaddle==3.0.0
+pip install paddleocr==3.0.0
+paddlex --install paddle2onnx
+
+2.test paddleocr and export onnx models:
+paddleocr ocr -i test.png
+paddlex --paddle2onnx --paddle_model_dir ~/.paddlex/official_models/PP-OCRv5_mobile_det --onnx_model_dir PP-OCRv5_mobile_det
+paddlex --paddle2onnx --paddle_model_dir ~/.paddlex/official_models/PP-OCRv5_mobile_rec --onnx_model_dir PP-OCRv5_mobile_rec
+
+3.convert onnx models to ncnn with pnnx tool:
+pip install -U pnnx
+pnnx PP-OCRv5_mobile_det.onnx inputshape=[1,3,320,320] inputshape2=[1,3,256,256]
+pnnx PP-OCRv5_mobile_rec.onnx inputshape=[1,3,48,160] inputshape2=[1,3,48,256]
+pnnx PP-OCRv5_server_det.onnx inputshape=[1,3,320,320] inputshape2=[1,3,256,256] fp16=0
+pnnx PP-OCRv5_server_rec.onnx inputshape=[1,3,48,160] inputshape2=[1,3,48,256] fp16=0
